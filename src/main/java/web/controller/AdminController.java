@@ -10,10 +10,14 @@ import web.service.UserService;
 
 @Controller
 public class AdminController {
-    @Autowired
+
     private UserService userService;
-    @Autowired
     private RoleService roleService;
+    @Autowired
+    public AdminController(UserService userService, RoleService roleService) {
+        this.userService = userService;
+        this.roleService = roleService;
+    }
 
     @GetMapping(value = "/admin")
     public String listUsers(ModelMap model) {
@@ -43,7 +47,7 @@ public class AdminController {
 
     @PatchMapping("/admin/edit/user/{id}")
     public String updateUser(@ModelAttribute("user") User user, @PathVariable("id") int id) {
-        userService.updateUser(user, id);
+        userService.updateUser(user);
         return "redirect:/admin";
     }
 

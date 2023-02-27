@@ -23,6 +23,7 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
     @Getter
+    @Setter
     private int id;
     @Column(name = "FirstName")
     @Setter
@@ -56,7 +57,7 @@ public class User implements UserDetails {
 //    @Size(min = 6, max = 12, message = "Password must be from 6 to 12 symbols lenght")
     private String password;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @ManyToMany (fetch = FetchType.LAZY)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "UserId"),
             inverseJoinColumns = @JoinColumn(name = "RoleId")

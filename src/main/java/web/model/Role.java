@@ -22,12 +22,12 @@ public class Role {
     @Setter
     private String roleName;
 
-//    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "roles")
 //    @JoinTable(name = "users_roles",
 //            joinColumns = @JoinColumn(name = "RoleId"),
 //            inverseJoinColumns = @JoinColumn(name = "UserId")
 //    )
-    @ManyToMany(mappedBy = "roles", cascade = CascadeType.ALL)
+//    @ManyToMany(mappedBy = "roles", cascade = CascadeType.ALL)
     @Getter
     @Setter
     private List<User> users;

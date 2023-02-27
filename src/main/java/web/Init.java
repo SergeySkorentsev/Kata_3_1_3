@@ -8,6 +8,8 @@ import web.model.Role;
 import web.model.User;
 import web.repository.RoleRepository;
 import web.repository.UserRepository;
+import web.service.RoleService;
+import web.service.UserService;
 
 
 import javax.annotation.PostConstruct;
@@ -17,45 +19,40 @@ import java.util.List;
 @Component
 public class Init {
 
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final PasswordEncoder passwordEncoder;
-
+    private final UserService userService;
+    private final RoleService roleService;
     @Autowired
-    public Init(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
+    public Init(UserService userService, RoleService roleService) {
+        this.userService = userService;
+        this.roleService = roleService;
     }
 
     @PostConstruct
     @Transactional
     public void InitUsers() {
-        if (userRepository.findAll().size() == 0) {
+        if (userService.getAllUsers().size() == 0) {
             User userAdmin = new User(
                     "admin",
                     "admin",
                     0,
                     "admin@site.ru",
-                    passwordEncoder.encode("admin")
+                    "admin"
             );
             User userUser = new User(
                     "user",
                     "user",
                     0,
                     "user@site.ru",
-                    passwordEncoder.encode("user")
+                    "user"
             );
-            userRepository.save(userAdmin);
-            userRepository.save(userUser);
             Role roleAdmin = new Role("ROLE_ADMIN");
             Role roleUser = new Role("ROLE_USER");
             List<Role> roles = Arrays.asList(roleAdmin, roleUser);
-            roleRepository.saveAll(roles);
+            roleService.saveAllRoles(roles);
             userAdmin.setRoles(Arrays.asList(roleAdmin));
             userUser.setRoles(Arrays.asList(roleUser));
-            userRepository.save(userAdmin);
-            userRepository.save(userUser);
+            userService.addUser(userAdmin);
+            userService.addUser(userUser);
         }
     }
 }
