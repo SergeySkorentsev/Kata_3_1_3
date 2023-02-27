@@ -1,74 +1,18 @@
 package web.service;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import web.model.User;
-import web.repository.UserRepository;
-
 import java.util.List;
 
-@Service
-public class UserService implements UserDetailsService {
+public interface UserService {
+    void addUser(User user);
 
-    private final UserRepository userRepository;
+    void updateUser(User updatedUser) ;
 
-    private final PasswordEncoder passwordEncoder;
+    void deleteUser(User user);
 
-    @Autowired
-    public UserService(UserRepository userRepository, @Lazy PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+    User getUser(int id);
 
-    public void addUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-    }
+    List<User> getAllUsers();
 
-    public void updateUser(User updatedUser, int id) {
-        User user = userRepository.getUserById(id);
-        user.setFirstName(updatedUser.getFirstName());
-        user.setLastName(updatedUser.getLastName());
-        user.setEmail(updatedUser.getEmail());
-        user.setAge(updatedUser.getAge());
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(updatedUser.getRoles());
-        userRepository.save(user);
-    }
+    User findUserByUsername(String username);
 
-    public void deleteUser(User user) {
-        userRepository.delete(user);
-    }
-
-    public User getUser(int id) {
-        return userRepository.getUserById(id);
-    }
-
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
-    public User findUserByUsername(String username) {
-        return userRepository.findUserByUsername(username);
-    }
-
-    @Override
-    @Transactional
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = findUserByUsername(username);
-        if(user == null) {
-            throw new UsernameNotFoundException(String.format("User %s not found", username));
-        }
-        return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
-                user.getPassword(),
-                user.getAuthorities()
-        );
-    }
 }
