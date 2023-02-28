@@ -32,6 +32,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     public void updateUser(User user) {
+        if (passwordEncoder.encode(user.getPassword()) != userRepository.getUserById(user.getId()).getPassword()) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
         userRepository.save(user);
     }
 
